@@ -5,13 +5,27 @@ import uvicorn
 from typing import Optional
 import json
 import structlog
+from dotenv import load_dotenv
 
 from db.database import get_db
 from agents.agent_graph import build_agent_graph
 from privacy.masking import DatabaseMasker, DocumentMasker
 from db.vector_store import FAISSVectorStore
+from utils.model_manager import ModelManager
 
+# Load environment variables
+load_dotenv()
+
+# Initialize logging
 logger = structlog.get_logger()
+
+# Initialize model manager
+try:
+    model_manager = ModelManager.get_instance()
+    logger.info("Model manager initialized successfully")
+except Exception as e:
+    logger.error(f"Error initializing model manager: {str(e)}")
+    raise
 
 app = FastAPI(title="Secure Agentic RAG System")
 
